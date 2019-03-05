@@ -1,2 +1,2 @@
-# nginx-balance
-nginx-balance-server
+# nginx 负载均衡
+一些简单配置
