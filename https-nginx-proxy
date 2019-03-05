@@ -1,0 +1,44 @@
+upstream balance {
+    server pravite-ip-address-1;
+    server pravite-ip-address-2;
+}
+
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name xiaoxiao.cn www.xiaoxiao.cn;
+    return 301 https://xiaoxiao.cn$request_uri;
+}
+
+server {
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/xiaoxiao.cn/fullchain.pem; 
+    ssl_certificate_key /etc/letsencrypt/live/xiaoxiao.cn/privkey.pem; 
+    server_name xiaoxiao.cn;
+    return 301 https://xiaoxiao.cn$request_uri;
+}
+
+server {
+    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/xiaoxiao.cn/fullchain.pem; 
+    ssl_certificate_key /etc/letsencrypt/live/xiaoxiao.cn/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; #
+    server_name xiaoxiao.cn;
+
+    location / {
+        add_header X-Content-Type-Options nosniff;
+        proxy_set_header X-Scheme $scheme;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-NginX-Proxy true;
+        proxy_hide_header X-Powered-By;
+        proxy_hide_header Vary;
+
+        proxy_pass http://balance;
+        proxy_redirect off;
+    }
+}
