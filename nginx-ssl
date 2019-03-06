@@ -17,7 +17,7 @@ sudo apt-get install python-certbot-nginx -y
 
 printf "${GREENCOLOR}Successfully Installed certbot nginx ${NC} \n\n"
 
-#sudo certbot --nginx -d nuli.io -d www.nuli.io
+sudo certbot --nginx -d xiaoxiao.io -d www.xiaoxiao.io
 
 # cron every month
 # 0 0 1 * * /usr/bin/certbot renew --quiet --renew-hook "/bin/systemctl reload nginx"
